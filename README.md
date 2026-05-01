@@ -100,12 +100,12 @@ CNC件采用嘉立创打样制作（打样零件汇总在CAD文件夹里）
    3. 坐标设置好后输入 CALIBRATE_TOOL TOOL=_ 可以校准指定热端（需要先校准T0），输入 CALIBRATE_ALL_TOOLS 可以校准全部（需要设定好有哪些热端），校准完成会自动存储偏移量。
 ### orcaslicer
    1. 修改打印机gcode里起始和耗材丝更换gcode、设置更多挤出机、设置挤出机回抽。
-打印起始Gcode：
+-打印起始Gcode：
    ```Gcode
    ; 让 OrcaSlicer 提取热床温度、初始喷嘴、用到的喷嘴列表及对应温度，发给打印机
 PRINT_START BED=[bed_temperature_initial_layer_single] INITIAL_TOOL=[initial_tool] TOOLS="{if is_extruder_used[0]}0,{endif}{if is_extruder_used[1]}1,{endif}{if is_extruder_used[2]}2,{endif}{if is_extruder_used[3]}3,{endif}{if is_extruder_used[4]}4,{endif}" TEMPS="{if is_extruder_used[0]}{nozzle_temperature_initial_layer[0]},{endif}{if is_extruder_used[1]}{nozzle_temperature_initial_layer[1]},{endif}{if is_extruder_used[2]}{nozzle_temperature_initial_layer[2]},{endif}{if is_extruder_used[3]}{nozzle_temperature_initial_layer[3]},{endif}{if is_extruder_used[4]}{nozzle_temperature_initial_layer[4]},{endif}"
 ```
-耗材更换Gcode：
+-耗材更换Gcode：
 ```Gcode
 M104 S{nozzle_temperature[next_extruder]} T{next_extruder}
 T{next_extruder}
