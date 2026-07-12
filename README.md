@@ -1,8 +1,10 @@
 # [CxChanger]
 
-[한국어](README.md) | [English](README.en.md) | [중국어](README.zh.md)
+저비용 예열식 다중 핫엔드 다중 재료 출력 솔루션 / Low-cost preheated multi-hotend multi-material printing solution.
 
-번역된 Klipper 설정 파일: [`klipper/en/`](klipper/en/) | [`klipper/ko/`](klipper/ko/)
+[한국어](README.md) | [English](README.en.md)
+
+Klipper 설정 파일: 기본 [`klipper/*.cfg`](klipper/)는 영어이며, 한국어 번역본은 [`klipper/ko/`](klipper/ko/), 영어 참조본은 [`klipper/en/`](klipper/en/)에 있습니다.
 
 [CxChanger]는 FDM 3D 프린팅을 위한 다중 재료/다중 색상 솔루션입니다. 출력 중 서로 다른 필라멘트가 장착된 예열 완료 핫엔드 모듈을 툴 교체하여 빠른 다중 재료 출력을 구현합니다. 목표는 가능한 한 낮은 비용으로 단순하고 안정적인 다중 재료 출력을 구현하는 것입니다. 높은 호환성을 위해 툴 교체는 프린트헤드의 XY축 이동만으로 수행되며, 교체 구조는 핫엔드 모듈 자체와 독립적입니다. 따라서 핫엔드 모듈 고정 부품 등을 수정하면 다른 핫엔드도 호환시킬 수 있습니다.
 

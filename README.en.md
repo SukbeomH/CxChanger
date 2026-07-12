@@ -1,8 +1,10 @@
 # [CxChanger]
 
-[Korean](README.md) | [English](README.en.md) | [Chinese](README.zh.md)
+Low-cost preheated multi-hotend multi-material printing solution / 저비용 예열식 다중 핫엔드 다중 재료 출력 솔루션.
 
-Translated Klipper configuration files: [`klipper/en/`](klipper/en/) | [`klipper/ko/`](klipper/ko/)
+[Korean](README.md) | [English](README.en.md)
+
+Klipper configuration files: the default [`klipper/*.cfg`](klipper/) files are in English. Korean translations are in [`klipper/ko/`](klipper/ko/), and English reference copies are in [`klipper/en/`](klipper/en/).
 
 [CxChanger] is a multi-material and multi-color solution for FDM 3D printing. It enables fast multi-material printing by switching between preheated hotend modules loaded with different filaments during a print. The goal is to provide multi-material printing at the lowest practical cost while keeping the mechanism simple and stable. For broad printer compatibility, tool changes only require XY motion of the toolhead. The switching mechanism is independent of the hotend module itself, so other hotends can be supported by modifying the hotend-module mount and related parts.
 
