@@ -66,8 +66,8 @@ Klipper 配置文件翻译版：[`klipper/en/`](klipper/en/) | [`klipper/ko/`](k
    2. 仿照extruder1格式定义增加的热端，加热棒热敏引脚按自己主板接线来，共用E0的挤出机，其他的为虚拟挤出机。
    3. probe采用固定微动，开始打印时热端全部停放于停靠坞中用耐高温硅胶垫堵嘴，加热到目标温度才拿出来解决初始漏料问题，不需要擦嘴，调平时未抓取热端此时微动为打印头最低点。还未支持其他调平方式，建议直接参考我的probe相关配置包括网床和调平的配置（主要是增加了调平前释放抓取的热端）。
    4. 添加停靠坞散热风扇配置，停靠坞散热风扇和喉管冷却风扇关联的挤出机里添加所有挤出机。
-   5. 修改打印开始gcode，实现打印前自动给要使用的热端进行挤出划线。
-   6. 修改打印结束gcode，添加UNTOOL命令保证打印完自动卸载热端，让下次打印时不用自己手动取下热端。增加关闭所有热端加热命令。
+   5. 修改 `printer.cfg` 中的 `PRINT_START` 宏，实现打印前自动为要使用的热端模块进行引料/清料划线。
+   6. 修改 `printer.cfg` 中的 `PRINT_END` 宏，添加 `UNTOOL` 命令，让打印完成后将当前热端模块停放到停靠坞。增加关闭所有热端加热命令。
 ### toolchange.cfg
    1. 添加toolchange.cfg。添加成功后仪表盘界面会出现T0、T1、T2以及、UNTOOL命令，（没调坐标先别点、会直接撞）点击T0是抓去T0，抓取T0后再点击T1坐标会自动卸载T0然后抓取T1，点击UNTOOL是卸载当前热端。
    2. 固定停靠坞以及调整停靠坞坐标：手动把热端装到打印头上，把打印头拖动到X轴最右边，再往前拖动，然后把第一个停靠坞固定在能刚好让热端锁定螺丝穿过停靠坞大孔的位置（这个位置即为第一个停靠坞的坐标），然后取下热端，点击全部归位，再把热端装到打印头上，慢慢移动打印头到刚才找到的停靠坞位置让锁定螺丝穿过停靠坞大孔，记下此时的坐标将其填入toolchange里T0的停靠坞位置，一个停靠坞占30mm宽度，其他停靠坞坐标用等差数列得到，如有误差可自己微调每一个停靠坞的坐标。
@@ -81,19 +81,19 @@ Klipper 配置文件翻译版：[`klipper/en/`](klipper/en/) | [`klipper/ko/`](k
    1. 添加calibration.cfg
    2. 归位xyz，调平完成后，固定好校准器，点击T0抓去第一个热端，移动至喷嘴尖端刚好位于校准器中心正上方距离1mm左右，记下这个时候的坐标，填入calibration.cfg里校准器坐标处，然后还需要在里面自己定义一个停靠坞范围外的安全位置，防止校准的时候撞到停靠坞里的其他热端。
    3. 坐标设置好后输入 CALIBRATE_TOOL TOOL=_ 可以校准指定热端（需要先校准T0），输入 CALIBRATE_ALL_TOOLS 可以校准全部（需要设定好有哪些热端），校准完成会自动存储偏移量。
-### orcaslicer
-   1. 修改打印机gcode里起始和耗材丝更换gcode、设置更多挤出机(根据自己热端数填写)、设置各挤出机切换耗材时回抽量（我设置的长度2mm）。
-- 打印起始Gcode(根据自己的热端数修改)：
+### OrcaSlicer
+   1. 在打印机配置的 `Machine G-code` 中修改 `Machine start G-code` 和 `Change filament G-code`、按热端模块数量设置更多挤出机，并设置每次工具切换的耗材回抽量（我设置的长度为 2 mm）。
+- `Machine start G-code`（根据自己的热端模块数量修改）：
 ```Gcode
    ; 让 OrcaSlicer 提取热床温度、初始喷嘴、用到的喷嘴列表及对应温度，发给打印机
 PRINT_START BED=[bed_temperature_initial_layer_single] INITIAL_TOOL=[initial_tool] TOOLS="{if is_extruder_used[0]}0,{endif}{if is_extruder_used[1]}1,{endif}{if is_extruder_used[2]}2,{endif}{if is_extruder_used[3]}3,{endif}{if is_extruder_used[4]}4,{endif}" TEMPS="{if is_extruder_used[0]}{nozzle_temperature_initial_layer[0]},{endif}{if is_extruder_used[1]}{nozzle_temperature_initial_layer[1]},{endif}{if is_extruder_used[2]}{nozzle_temperature_initial_layer[2]},{endif}{if is_extruder_used[3]}{nozzle_temperature_initial_layer[3]},{endif}{if is_extruder_used[4]}{nozzle_temperature_initial_layer[4]},{endif}"
 ```
-- 耗材更换Gcode：
+- `Change filament G-code`：
 ```Gcode
 M104 S{nozzle_temperature[next_extruder]} T{next_extruder}
 T{next_extruder}
 ```
-   2. 工艺栏里开启擦拭塔（如果料和参数调得好，且模型不涉及快速微小挤出，可以把模型拖到停靠坞旁边关掉擦料塔尝试无擦料塔打印）和Ooze自动预热（我设置的软化温度负180，预热时间35s，根据自己热端加热速度修改）。
+   2. 在工艺配置的多材料设置中开启 `Prime Tower`（擦拭塔）。如果耗材和参数调得好，且模型不涉及快速微小挤出，可以把模型拖到停靠坞旁边，关闭 `Prime Tower` 后尝试打印。也请在同一设置区域开启 `Ooze Prevention`（渗漏预防）。我设置的软化温度为 -180，预热时间为 35 s；请根据自己的热端模块加热速度修改。
 
 
 ## 注意事项
